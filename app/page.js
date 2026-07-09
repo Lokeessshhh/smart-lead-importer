@@ -240,239 +240,169 @@ export default function Home() {
   };
 
   return (
-    <div className="min-h-screen w-full flex overflow-hidden transition-colors duration-300">
-      {/* LEFT SIDEBAR - Enterprise Workspace Styling */}
-      <aside className="w-[var(--sidebar-w)] border-r border-[var(--border)] bg-white dark:bg-[var(--bg-surface)] hidden lg:flex flex-col select-none z-10 shrink-0">
-        {/* Logo and Workspace Selector */}
-        <div className="h-16 px-6 border-b border-[var(--border)] flex items-center justify-between">
-          <div className="flex items-center gap-2">
-            <span className="w-6 h-6 rounded-lg bg-gradient-to-tr from-[var(--accent)] to-gray-500 flex items-center justify-center text-white font-black text-sm">
-              G
-            </span>
-            <span className="font-extrabold text-sm tracking-tight text-[var(--text-primary)]">
-              GrowEasy CRM
-            </span>
-          </div>
-          <span className="text-[10px] font-extrabold uppercase bg-[var(--accent-light)] text-[var(--accent)] px-2 py-0.5 rounded">
-            v1.2
+    <div className="min-h-screen w-full flex flex-col transition-colors duration-[220ms]">
+      {/* Top Navbar */}
+      <header className="h-16 px-6 md:px-8 border-b border-[var(--border)] bg-transparent flex items-center justify-between z-20 shrink-0">
+        <div className="flex items-center gap-2 select-none">
+          <span className="font-semibold text-[15px] tracking-tight text-[var(--text-primary)]">
+            GrowEasy
+          </span>
+          <span className="text-[15px] text-[var(--text-muted)] font-normal">
+            CSV Importer
           </span>
         </div>
 
-        {/* Navigation Section */}
-        <nav className="flex-1 px-4 py-6 space-y-1">
-          <div className="px-3 mb-2 text-[10px] font-extrabold uppercase text-[var(--text-tertiary)] tracking-wider">
-            Workspace
-          </div>
-          <div className="flex items-center gap-3 px-3 py-2 rounded-xl text-xs font-bold text-[var(--text-secondary)] opacity-60 cursor-default">
-            <LayoutDashboard className="w-4.5 h-4.5" />
-            <span>Overview</span>
-          </div>
-          <div className="flex items-center gap-3 px-3 py-2 rounded-xl text-xs font-bold text-[var(--text-secondary)] opacity-60 cursor-default">
-            <Users className="w-4.5 h-4.5" />
-            <span>Contacts Database</span>
-          </div>
-          <div className="flex items-center justify-between px-3 py-2 rounded-xl text-xs font-bold bg-[var(--accent-light)] text-[var(--accent)]">
-            <div className="flex items-center gap-3">
-              <FileSpreadsheet className="w-4.5 h-4.5" />
-              <span>CSV AI Importer</span>
-            </div>
-            <span className="w-2 h-2 rounded-full bg-[var(--accent)]" />
-          </div>
-          <div className="flex items-center gap-3 px-3 py-2 rounded-xl text-xs font-bold text-[var(--text-secondary)] opacity-60 cursor-default">
-            <Cable className="w-4.5 h-4.5" />
-            <span>Integrations</span>
-          </div>
+        <div className="flex items-center gap-4">
+          {/* Theme Toggle Button */}
+          <button
+            onClick={toggleTheme}
+            className="p-2 border border-[rgba(0,0,0,0.12)] dark:border-[rgba(255,255,255,0.12)] bg-transparent hover:bg-[#F3F2EF] dark:hover:bg-[var(--bg-elevated)] rounded-lg text-[var(--text-secondary)] hover:text-[var(--text-primary)] transition-all duration-180 cursor-pointer active:scale-95"
+            title={theme === "light" ? "Switch to Dark Mode" : "Switch to Light Mode"}
+          >
+            {theme === "light" ? (
+              <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
+                <path strokeLinecap="round" strokeLinejoin="round" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z" />
+              </svg>
+            ) : (
+              <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
+                <path strokeLinecap="round" strokeLinejoin="round" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364-6.364l-.707.707M6.343 17.657l-.707.707m0-12.728l.707.707m12.728 12.728l.707.707M12 8a4 4 0 100 8 4 4 0 000-8z" />
+              </svg>
+            )}
+          </button>
 
-          <div className="pt-6 px-3 mb-2 text-[10px] font-extrabold uppercase text-[var(--text-tertiary)] tracking-wider">
-            System
-          </div>
-          <div className="flex items-center gap-3 px-3 py-2 rounded-xl text-xs font-bold text-[var(--text-secondary)] opacity-60 cursor-default">
-            <Settings className="w-4.5 h-4.5" />
-            <span>CRM Setup</span>
-          </div>
-        </nav>
-
-        {/* Profile Card & Workspace Info */}
-        <div className="p-4 border-t border-[var(--border)] bg-[var(--bg-elevated)]/40">
-          <div className="flex items-center gap-3 bg-white dark:bg-[var(--bg-surface)] p-3 rounded-xl border border-[var(--border)] custom-shadow">
-            <div className="w-8 h-8 rounded-full bg-gradient-to-tr from-[var(--accent)] to-gray-500 flex items-center justify-center text-white text-xs font-bold uppercase">
-              V
-            </div>
-            <div className="flex flex-col min-w-0">
-              <span className="text-xs font-bold text-[var(--text-primary)] truncate">
-                Varun
-              </span>
-              <span className="text-[10px] text-[var(--text-secondary)] truncate">
-                varun@groweasy.ai
-              </span>
-            </div>
+          {/* Status Dot */}
+          <div className="flex items-center gap-2 bg-[var(--bg-elevated)] px-3.5 py-1.5 rounded-lg border-none select-none">
+            <span className={`w-2 h-2 rounded-full ${
+              isBackendConnected 
+                ? "bg-[var(--success)] animate-pulse" 
+                : isWakingUp 
+                ? "bg-[var(--warning)] animate-bounce" 
+                : "bg-[var(--danger)]"
+            }`} />
+            <span className="text-[11px] font-medium text-[var(--text-secondary)] uppercase tracking-wider">
+              {isBackendConnected 
+                ? "API Connected" 
+                : isWakingUp 
+                ? "Waking Up..." 
+                : "API Offline"}
+            </span>
           </div>
         </div>
-      </aside>
+      </header>
 
-      {/* RIGHT CONTENT WORKSPACE */}
-      <div className="flex-1 flex flex-col min-w-0 overflow-y-auto relative h-screen">
-        {/* Server waking up warning alert banner */}
-        {!isBackendConnected && isWakingUp && (
-          <div className="m-6 mb-0 flex items-center gap-3 bg-[var(--warning-light)] border border-[var(--warning-border)] text-[var(--warning)] text-xs font-semibold px-4 py-3 rounded-2xl animate-pulse">
-            <span className="flex h-2 w-2 relative shrink-0">
-              <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-[var(--warning)] opacity-75"></span>
-              <span className="relative inline-flex rounded-full h-2 w-2 bg-[var(--warning)]"></span>
-            </span>
-            <span>
-              <strong>Render Server Waking Up:</strong> The backend is hosted on a free Render tier and is spinning up from sleep. AI processing will be available in about 30 seconds.
-            </span>
+      {/* Server waking up warning alert banner */}
+      {!isBackendConnected && isWakingUp && (
+        <div className="mx-auto w-full max-w-[860px] px-6 mt-6 flex items-center gap-3 bg-[var(--warning-light)] text-[var(--warning)] text-xs font-semibold px-4 py-3 rounded-2xl animate-pulse">
+          <span className="flex h-2 w-2 relative shrink-0">
+            <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-[var(--warning)] opacity-75"></span>
+            <span className="relative inline-flex rounded-full h-2 w-2 bg-[var(--warning)]"></span>
+          </span>
+          <span>
+            <strong>Render Server Waking Up:</strong> The backend is hosted on a free Render tier and is spinning up from sleep. AI processing will be available in about 30 seconds.
+          </span>
+        </div>
+      )}
+
+      {/* Main Centered Content (Max-width 860px) */}
+      <main className="flex-1 max-w-[860px] w-full mx-auto px-6 pt-12 pb-24 flex flex-col justify-start">
+        
+        {/* Stepper Progress Block */}
+        <Stepper currentStep={currentStep} steps={STEPS} />
+
+        {/* Error Banner if batch process fails */}
+        {errorMsg && (
+          <div className="w-full border border-[var(--danger-border)] bg-[var(--danger-light)] rounded-2xl p-4 mb-6 flex items-start gap-3 animate-slide-up">
+            <AlertCircle className="w-5 h-5 text-[var(--danger)] shrink-0 mt-0.5" />
+            <div className="flex-1 text-left">
+              <h4 className="text-xs font-bold text-[var(--danger)]">
+                AI Pipeline Failed
+              </h4>
+              <p className="text-[11px] text-[var(--text-secondary)] mt-1 font-medium">{errorMsg}</p>
+              <button
+                onClick={handleConfirmImport}
+                className="mt-3 text-xs font-bold text-[var(--accent)] hover:underline flex items-center gap-1 cursor-pointer active:scale-95"
+              >
+                <RefreshCw className="w-3 h-3 animate-spin" />
+                <span>Retry Processing</span>
+              </button>
+            </div>
           </div>
         )}
 
-        {/* Top Header Bar */}
-        <header className="h-16 px-6 md:px-8 border-b border-[var(--border)] bg-white/80 dark:bg-[var(--bg-surface)]/80 backdrop-blur flex items-center justify-between sticky top-0 z-20 shrink-0">
-          <div className="flex items-center gap-2">
-            <span className="text-xs text-[var(--text-secondary)] font-medium">CRM Tools</span>
-            <ChevronRight className="w-3.5 h-3.5 text-[var(--text-tertiary)]" />
-            <span className="text-xs text-[var(--text-primary)] font-bold">CSV AI Importer</span>
-          </div>
+        {/* Stepper Panels Layout container */}
+        <div className="w-full flex-1 flex flex-col justify-start mt-6">
+          {/* Step 1: Upload */}
+          {currentStep === 1 && (
+            <UploadZone
+              file={file}
+              onFileSelect={handleFileSelect}
+              onFileRemove={handleFileRemove}
+              error={uploadError}
+            />
+          )}
 
-          <div className="flex items-center gap-4">
-            {/* Theme Toggle Button */}
-            <button
-              onClick={toggleTheme}
-              className="p-2 border border-[var(--border)] bg-white dark:bg-[var(--bg-surface)] hover:bg-[var(--bg-elevated)] rounded-xl text-[var(--text-secondary)] hover:text-[var(--text-primary)] transition-all cursor-pointer"
-              title={theme === "light" ? "Switch to Dark Mode" : "Switch to Light Mode"}
-            >
-              {theme === "light" ? (
-                <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
-                  <path strokeLinecap="round" strokeLinejoin="round" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z" />
-                </svg>
-              ) : (
-                <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
-                  <path strokeLinecap="round" strokeLinejoin="round" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364-6.364l-.707.707M6.343 17.657l-.707.707m0-12.728l.707.707m12.728 12.728l.707.707M12 8a4 4 0 100 8 4 4 0 000-8z" />
-                </svg>
-              )}
-            </button>
-
-            {/* Status Dot */}
-            <div className="flex items-center gap-2 bg-[var(--bg-elevated)] px-3 py-1.5 rounded-full border border-[var(--border)]">
-              <span className={`w-2 h-2 rounded-full ${
-                isBackendConnected 
-                  ? "bg-[var(--success)] animate-pulse" 
-                  : isWakingUp 
-                  ? "bg-[var(--warning)] animate-bounce" 
-                  : "bg-[var(--danger)]"
-              }`} />
-              <span className="text-[10px] font-bold text-[var(--text-secondary)] uppercase tracking-wider">
-                {isBackendConnected 
-                  ? "API Connected" 
-                  : isWakingUp 
-                  ? "Waking Up..." 
-                  : "API Offline"}
-              </span>
-            </div>
-          </div>
-        </header>
-
-        {/* Main Work Area */}
-        <main className="flex-1 p-6 md:p-8 flex flex-col justify-start">
-          {/* Stepper Progress Block */}
-          <div className="w-full max-w-5xl mx-auto">
-            <Stepper currentStep={currentStep} steps={STEPS} />
-          </div>
-
-          {/* Error Banner if batch process fails */}
-          {errorMsg && (
-            <div className="max-w-5xl w-full mx-auto border border-[var(--danger-border)] bg-[var(--danger-light)] rounded-2xl p-4 mb-6 flex items-start gap-3 animate-slide-up">
-              <AlertCircle className="w-5 h-5 text-[var(--danger)] shrink-0 mt-0.5" />
-              <div className="flex-1 text-left">
-                <h4 className="text-xs font-bold text-[var(--danger)]">
-                  AI Pipeline Failed
-                </h4>
-                <p className="text-[11px] text-[var(--text-secondary)] mt-1 font-medium">{errorMsg}</p>
+          {/* Step 2: Preview Table */}
+          {currentStep === 2 && (
+            <div className="space-y-6">
+              <PreviewTable headers={headers} rows={rows} />
+              <div className="flex justify-end gap-3 select-none">
                 <button
-                  onClick={handleConfirmImport}
-                  className="mt-3 text-xs font-bold text-[var(--accent)] hover:underline flex items-center gap-1 cursor-pointer"
+                  type="button"
+                  onClick={handleFileRemove}
+                  className="px-4 py-2 border border-[rgba(0,0,0,0.12)] dark:border-[rgba(255,255,255,0.12)] rounded-lg text-xs font-semibold text-[var(--text-secondary)] hover:text-[var(--text-primary)] bg-transparent hover:bg-[#F3F2EF] dark:hover:bg-[var(--bg-elevated)] transition-all duration-180 cursor-pointer active:scale-95"
                 >
-                  <RefreshCw className="w-3 h-3 animate-spin" />
-                  <span>Retry Processing</span>
+                  Clear CSV File
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setCurrentStep(3)}
+                  className="inline-flex items-center px-5 py-2 rounded-lg text-xs font-semibold text-white bg-[var(--accent)] hover:bg-[#0066DD] transition-all duration-180 cursor-pointer shadow-[0_1px_3px_rgba(0,122,255,0.3)] hover:shadow-[0_2px_6px_rgba(0,122,255,0.4)] active:scale-95"
+                >
+                  Proceed to Import
                 </button>
               </div>
             </div>
           )}
 
-          {/* Stepper Panels Layout container */}
-          <div className="max-w-5xl w-full mx-auto flex-1 flex flex-col justify-start mt-4">
-            {/* Step 1: Upload */}
-            {currentStep === 1 && (
-              <UploadZone
-                file={file}
-                onFileSelect={handleFileSelect}
-                onFileRemove={handleFileRemove}
-                error={uploadError}
-              />
-            )}
-
-            {/* Step 2: Preview Table */}
-            {currentStep === 2 && (
-              <div className="space-y-6">
+          {/* Step 3: Confirm Import */}
+          {currentStep === 3 && (
+            <div className="relative space-y-6">
+              {isLoading && (
+                <LoadingOverlay
+                  currentBatch={currentBatch}
+                  totalBatches={totalBatches}
+                  progress={progress}
+                />
+              )}
+              <div className={`${isLoading ? "opacity-30 pointer-events-none" : ""} space-y-6 transition-opacity duration-150`}>
+                <ConfirmBanner
+                  recordCount={rows.length}
+                  onConfirm={handleConfirmImport}
+                  onBack={handleBackToPreview}
+                  isLoading={isLoading}
+                />
                 <PreviewTable headers={headers} rows={rows} />
-                <div className="flex justify-end gap-3 select-none">
-                  <button
-                    type="button"
-                    onClick={handleFileRemove}
-                    className="px-5 py-2.5 border border-[var(--border)] rounded-xl font-bold text-xs text-[var(--text-secondary)] bg-white hover:bg-[var(--bg-elevated)] hover:text-[var(--text-primary)] transition-all cursor-pointer"
-                  >
-                    Clear CSV File
-                  </button>
-                  <button
-                    type="button"
-                    onClick={() => setCurrentStep(3)}
-                    className="inline-flex items-center px-6 py-2.5 rounded-xl font-bold text-xs text-white bg-gradient-to-r from-[var(--accent)] to-gray-700 hover:from-[var(--accent-hover)] hover:to-gray-800 transition-all duration-200 custom-shadow hover:scale-[1.02] cursor-pointer"
-                  >
-                    Proceed to Import
-                  </button>
-                </div>
               </div>
-            )}
+            </div>
+          )}
 
-            {/* Step 3: Confirm Import */}
-            {currentStep === 3 && (
-              <div className="relative space-y-6">
-                {isLoading && (
-                  <LoadingOverlay
-                    currentBatch={currentBatch}
-                    totalBatches={totalBatches}
-                    progress={progress}
-                  />
-                )}
-                <div className={`${isLoading ? "opacity-30 pointer-events-none" : ""} space-y-6 transition-opacity duration-150`}>
-                  <ConfirmBanner
-                    recordCount={rows.length}
-                    onConfirm={handleConfirmImport}
-                    onBack={handleBackToPreview}
-                    isLoading={isLoading}
-                  />
-                  <PreviewTable headers={headers} rows={rows} />
-                </div>
+          {/* Step 4: Results Display */}
+          {currentStep === 4 && (
+            <div className="space-y-6">
+              <ResultsTable records={results} />
+              <div className="pt-2 flex justify-start select-none">
+                <button
+                  type="button"
+                  onClick={handleFileRemove}
+                  className="inline-flex items-center gap-2 px-4 py-2 border border-[rgba(0,0,0,0.12)] dark:border-[rgba(255,255,255,0.12)] rounded-lg text-xs font-semibold text-[var(--text-secondary)] hover:text-[var(--text-primary)] bg-transparent hover:bg-[#F3F2EF] dark:hover:bg-[var(--bg-elevated)] transition-all duration-180 cursor-pointer active:scale-95"
+                >
+                  Import Another File
+                </button>
               </div>
-            )}
-
-            {/* Step 4: Results Display */}
-            {currentStep === 4 && (
-              <div className="space-y-6">
-                <ResultsTable records={results} />
-                <div className="pt-2 flex justify-start select-none">
-                  <button
-                    type="button"
-                    onClick={handleFileRemove}
-                    className="inline-flex items-center gap-2 px-5 py-2.5 border border-[var(--border)] rounded-xl font-bold text-xs text-[var(--text-secondary)] bg-white hover:bg-[var(--bg-elevated)] hover:text-[var(--text-primary)] transition-all cursor-pointer"
-                  >
-                    Import Another File
-                  </button>
-                </div>
-              </div>
-            )}
-          </div>
-        </main>
-      </div>
+            </div>
+          )}
+        </div>
+      </main>
     </div>
   );
 }

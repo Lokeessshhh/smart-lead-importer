@@ -1,21 +1,10 @@
 "use client";
-import React, { useRef, useState } from "react";
-import { UploadCloud, AlertCircle, FileSpreadsheet, Trash2, Download } from "lucide-react";
+import React, { useState, useRef } from "react";
+import { UploadCloud, FileSpreadsheet, Trash2, AlertCircle, Download } from "lucide-react";
 
-/**
- * Format bytes to readable size string
- */
-function formatBytes(bytes, decimals = 2) {
-  if (bytes === 0) return '0 Bytes';
-  const k = 1024;
-  const dm = decimals < 0 ? 0 : decimals;
-  const sizes = ['Bytes', 'KB', 'MB', 'GB'];
-  const i = Math.floor(Math.log(bytes) / Math.log(k));
-  return parseFloat((bytes / Math.pow(k, i)).toFixed(dm)) + ' ' + sizes[i];
-}
-
-export default function UploadZone({ file, onFileSelect, onFileRemove, error }) {
+export default function UploadZone({ onFileSelect, file, onFileRemove }) {
   const [isDragActive, setIsDragActive] = useState(false);
+  const [error, setError] = useState("");
   const fileInputRef = useRef(null);
 
   const handleDrag = (e) => {
@@ -26,22 +15,6 @@ export default function UploadZone({ file, onFileSelect, onFileRemove, error }) 
     } else if (e.type === "dragleave") {
       setIsDragActive(false);
     }
-  };
-
-  const validateAndSelectFile = (selectedFile) => {
-    if (!selectedFile) return;
-
-    if (!selectedFile.name.endsWith(".csv") && selectedFile.type !== "text/csv") {
-      onFileSelect(null, "Invalid file type. Only CSV files are allowed.");
-      return;
-    }
-
-    if (selectedFile.size > 50 * 1024 * 1024) {
-      onFileSelect(null, "File size exceeds 50MB limit.");
-      return;
-    }
-
-    onFileSelect(selectedFile, "");
   };
 
   const handleDrop = (e) => {
@@ -60,24 +33,53 @@ export default function UploadZone({ file, onFileSelect, onFileRemove, error }) 
     }
   };
 
+  const validateAndSelectFile = (selectedFile) => {
+    setError("");
+    
+    // Check file type (must be CSV)
+    if (!selectedFile.name.endsWith(".csv") && selectedFile.type !== "text/csv") {
+      setError("Please upload a valid CSV file (.csv).");
+      onFileSelect(null, "Please upload a valid CSV file (.csv).");
+      return;
+    }
+
+    // Check file size (max 50MB)
+    const maxSize = 50 * 1024 * 1024; // 50MB in bytes
+    if (selectedFile.size > maxSize) {
+      setError("File exceeds the maximum size limit of 50MB.");
+      onFileSelect(null, "File exceeds the maximum size limit of 50MB.");
+      return;
+    }
+
+    onFileSelect(selectedFile, null);
+  };
+
   const onButtonClick = () => {
     fileInputRef.current.click();
   };
 
+  const formatBytes = (bytes, decimals = 2) => {
+    if (bytes === 0) return "0 Bytes";
+    const k = 1024;
+    const dm = decimals < 0 ? 0 : decimals;
+    const sizes = ["Bytes", "KB", "MB", "GB"];
+    const i = Math.floor(Math.log(bytes) / Math.log(k));
+    return parseFloat((bytes / Math.pow(k, i)).toFixed(dm)) + " " + sizes[i];
+  };
+
   const triggerDownloadSample = () => {
     const csvContent = 
-      "created_at,name,email,country_code,mobile_without_country_code,company,city,state,country,lead_owner,crm_status,crm_note,data_source,possession_time,description\n" +
-      "2026-05-13 14:20:48,John Doe,john.doe@example.com,+91,9876543210,GrowEasy,Mumbai,Maharashtra,India,test@gmail.com,GOOD_LEAD_FOLLOW_UP,Client is asking to reschedule demo,leads_on_demand,Ready Now,Budget approved\n" +
-      "2026-05-13 14:25:30,Sarah Johnson,sarah.johnson@example.com,+91,9876543211,Tech Solutions,Bangalore,Karnataka,India,test@gmail.com,DID_NOT_CONNECT,Person was busy,meridian_tower,Ready Now,\n" +
-      "2026-05-13 14:30:15,Rajesh Patel,rajesh.patel@example.com,+91,9876543212,Startup Inc,Delhi,Delhi,India,test@gmail.com,BAD_LEAD,Not interested in our services,,2 years,\n" +
-      "2026-05-13 14:35:22,Priya Singh,priya.singh@example.com,+91,9876543213,Enterprise Corp,Pune,Maharashtra,India,test@gmail.com,SALE_DONE,Deal closed,eden_park,,Senior VP signed off\n" +
-      "2026-05-13 14:40:00,Invalid Row,no-email-or-phone,,,,,,,,,,,\n";
-    
+      "Name,Email,Mobile,CRM Status,Data Source,CRM Note,Possession Time,Created Date\n" +
+      "MR. VIKRAM MALHOTRA,vikram.malhotra@gmail.com,9988776655,GOOD LEAD FOLLOW UP,Facebook,Extremely interested,Q1-2027,13-06-2026\n" +
+      "sneha_iyer,sneha.work@techcorp.com,9090909090,SALE DONE,meridian_tower,Payment received,immediate,Jun 14 2026\n" +
+      "Dr. Pooja Sharma-Gupta,dr.pooja@gmail.com,9543219876,DID NOT CONNECT,varah_swamy,Doctor keen on villa plots,Ready,2026/06/16\n" +
+      "Md. Irfan Khan,irfan.k@khangroup.in,8432109876,BAD LEAD,leads_on_demand,Wants to negotiate price,Dec 2026,17-06-2026";
+      
     const blob = new Blob([csvContent], { type: "text/csv;charset=utf-8;" });
     const url = URL.createObjectURL(blob);
     const link = document.createElement("a");
     link.setAttribute("href", url);
-    link.setAttribute("download", "groweasy_crm_sample.csv");
+    link.setAttribute("download", "groweasy_sample_leads.csv");
     document.body.appendChild(link);
     link.click();
     document.body.removeChild(link);
@@ -100,46 +102,42 @@ export default function UploadZone({ file, onFileSelect, onFileRemove, error }) 
           onDragLeave={handleDrag}
           onDrop={handleDrop}
           onClick={onButtonClick}
-          className={`w-full min-h-[300px] rounded-2xl flex flex-col items-center justify-center p-8 select-none cursor-pointer transition-all duration-300 relative border-2 ${
+          className={`w-full min-h-[280px] rounded-2xl flex flex-col items-center justify-center p-8 select-none cursor-pointer transition-all duration-220 relative border-none dot-grid ${
             isDragActive
-              ? "bg-[var(--accent-light)] border-[var(--accent)] scale-[1.01]"
+              ? "bg-[#EBF4FF] dark:bg-[rgba(0,122,255,0.08)] scale-[1.01] custom-shadow-lg"
               : error
-              ? "bg-[var(--danger-light)] border-[var(--danger)]"
-              : "bg-white/60 dark:bg-[var(--bg-surface)]/60 hover:bg-white/80 dark:hover:bg-[var(--bg-surface)]/80 border-dashed border-[var(--border-hover)] custom-shadow hover:custom-shadow-lg"
+              ? "bg-[var(--danger-light)] border border-[var(--danger)]"
+              : "bg-white dark:bg-[var(--bg-surface)] custom-shadow hover:custom-shadow-md"
           }`}
         >
           {/* Inner wrapper to disable pointer-events and prevent dragenter/dragleave flicker */}
           <div className="flex flex-col items-center justify-center text-center pointer-events-none">
-            {/* Glowing central icon */}
-            <div className={`w-14 h-14 rounded-full flex items-center justify-center mb-4 transition-all duration-300 ${
-              isDragActive 
-                ? "bg-[var(--accent)] text-white scale-110" 
-                : "bg-[var(--accent-light)] text-[var(--accent)]"
-            }`}>
-              <UploadCloud className="w-7 h-7" />
+            {/* Apple blue central icon */}
+            <div className="w-12 h-12 rounded-full flex items-center justify-center mb-4 text-[var(--accent)] bg-[var(--accent-light)] transition-all duration-200">
+              <UploadCloud className="w-6 h-6" />
             </div>
 
-            <h3 className="text-lg font-bold text-[var(--text-primary)] tracking-tight mb-2">
-              Drag & drop your CSV file here
+            <h3 className="text-lg font-semibold text-[var(--text-primary)] tracking-tight mb-1.5">
+              Drop your CSV here
             </h3>
-            <p className="text-sm text-[var(--text-secondary)] mb-6 text-center max-w-sm">
-              or <span className="text-[var(--accent)] font-semibold underline">browse files</span> from your local system
+            <p className="text-sm text-[var(--text-secondary)] mb-6">
+              or <span className="text-[var(--accent)] font-medium hover:underline">browse files</span> from your local system
             </p>
 
-            <div className="flex items-center gap-3 bg-[var(--bg-elevated)] border border-[var(--border)] px-4 py-1.5 rounded-full text-xs font-mono text-[var(--text-secondary)]">
-              <span>CSV files only</span>
-              <span className="w-1 h-1 rounded-full bg-[var(--text-tertiary)]" />
-              <span>Max size 50MB</span>
+            <div className="flex items-center gap-2 bg-[var(--bg-elevated)] px-3.5 py-1 rounded-full text-xs font-mono text-[var(--text-secondary)]">
+              <span>.csv</span>
+              <span className="w-1 h-1 rounded-full bg-[var(--text-muted)]" />
+              <span>max 50MB</span>
             </div>
           </div>
 
           {/* Pulse ring when drag active */}
           {isDragActive && (
-            <span className="absolute inset-0 rounded-2xl border-2 border-[var(--accent)] opacity-40 animate-pulse pointer-events-none" />
+            <span className="absolute inset-0 rounded-2xl border border-[var(--accent)] opacity-20 animate-pulse pointer-events-none" />
           )}
         </div>
       ) : (
-        <div className="w-full bg-white dark:bg-[var(--bg-surface)] border border-[var(--border)] rounded-2xl p-6 custom-shadow animate-slide-up">
+        <div className="w-full bg-white dark:bg-[var(--bg-surface)] rounded-2xl p-6 custom-shadow animate-slide-up border-none">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-4">
               <div className="w-12 h-12 bg-emerald-50 dark:bg-emerald-950/20 text-emerald-600 dark:text-emerald-400 rounded-xl flex items-center justify-center border border-emerald-100 dark:border-emerald-900/35">
@@ -162,7 +160,7 @@ export default function UploadZone({ file, onFileSelect, onFileRemove, error }) 
               <button
                 type="button"
                 onClick={onFileRemove}
-                className="p-2 hover:bg-[var(--danger-light)] hover:text-[var(--danger)] text-[var(--text-secondary)] rounded-xl border border-transparent hover:border-[var(--danger-border)] transition-all cursor-pointer"
+                className="p-2 hover:bg-[var(--danger-light)] hover:text-[var(--danger)] text-[var(--text-secondary)] rounded-xl transition-all cursor-pointer active:scale-95"
                 title="Remove file"
               >
                 <Trash2 className="w-4 h-4" />
@@ -183,7 +181,7 @@ export default function UploadZone({ file, onFileSelect, onFileRemove, error }) 
         <button
           type="button"
           onClick={triggerDownloadSample}
-          className="mt-6 text-xs text-[var(--text-secondary)] hover:text-[var(--accent)] font-semibold inline-flex items-center gap-2 bg-white/60 dark:bg-[var(--bg-surface)]/60 hover:bg-white dark:hover:bg-[var(--bg-surface)] border border-[var(--border)] px-4 py-2 rounded-full transition-all custom-shadow cursor-pointer"
+          className="mt-6 text-xs text-[var(--text-secondary)] hover:text-[var(--accent)] font-semibold inline-flex items-center gap-2 bg-white dark:bg-[var(--bg-surface)] hover:bg-[var(--bg-elevated)] border border-[var(--border)] px-4 py-2 rounded-lg transition-all custom-shadow cursor-pointer active:scale-95"
         >
           <Download className="w-3.5 h-3.5" />
           <span>Download sample CSV template</span>

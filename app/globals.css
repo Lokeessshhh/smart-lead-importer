@@ -2,79 +2,96 @@
 
 @layer base {
   :root {
-    --bg-base: #F9FAFB;
+    --bg-base: #FAF9F7;
     --bg-surface: #FFFFFF;
-    --bg-elevated: #F3F4F6;
-    --border: #E5E7EB;
-    --border-hover: #9CA3AF;
+    --bg-elevated: #F3F2EF;
+    --bg-sidebar: #F0EFec;
+    --border: rgba(0, 0, 0, 0.07);
+    --border-hover: rgba(0, 0, 0, 0.15);
     
-    --text-primary: #111827;
-    --text-secondary: #4B5563;
-    --text-tertiary: #9CA3AF;
+    --text-primary: #1A1A1A;
+    --text-secondary: #6B6B6B;
+    --text-muted: #ADADAD;
     
-    --accent: #000000;
-    --accent-hover: #1F2937;
-    --accent-light: #F3F4F6;
-    --accent-gradient: linear-gradient(135deg, #1F2937 0%, #000000 100%);
+    --accent: #007AFF;
+    --accent-hover: #0066DD;
+    --accent-light: #EBF4FF;
     
-    --success: #10B981;
-    --success-light: #ECFDF5;
-    --success-border: #A7F3D0;
+    --success: #34C759;
+    --success-light: #F0FBF3;
+    --success-border: rgba(52, 199, 89, 0.15);
     
-    --danger: #EF4444;
-    --danger-light: #FEF2F2;
-    --danger-border: #FEE2E2;
+    --danger: #FF3B30;
+    --danger-light: #FFF2F1;
+    --danger-border: rgba(255, 59, 48, 0.15);
 
-    --warning: #F59E0B;
-    --warning-light: #FFFBEB;
-    --warning-border: #FDE68A;
-    
-    --sidebar-w: 260px;
-    --glass-bg: rgba(255, 255, 255, 0.85);
-    --glass-border: rgba(229, 231, 235, 0.7);
+    --warning: #FF9500;
+    --warning-light: #FFF8EE;
+    --warning-border: rgba(255, 149, 0, 0.15);
+
+    --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.06), 0 1px 2px rgba(0, 0, 0, 0.04);
+    --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.08), 0 2px 4px rgba(0, 0, 0, 0.04);
   }
 
   .dark {
-    --bg-base: #0F1115;
-    --bg-surface: #17191E;
-    --bg-elevated: #202228;
-    --border: #2E3039;
-    --border-hover: #4B4D56;
+    --bg-base: #1C1B19;
+    --bg-surface: #242320;
+    --bg-elevated: #2C2B28;
+    --bg-sidebar: #201F1D;
     
-    --text-primary: #F3F4F6;
-    --text-secondary: #9CA3AF;
-    --text-tertiary: #6B7280;
+    --text-primary: #F0EDE8;
+    --text-secondary: #9A9690;
+    --text-muted: #5C5A56;
     
-    --accent: #FFFFFF;
-    --accent-hover: #E5E7EB;
-    --accent-light: #202228;
-    --accent-gradient: linear-gradient(135deg, #E5E7EB 0%, #FFFFFF 100%);
+    --border: rgba(255, 255, 255, 0.07);
+    --border-hover: rgba(255, 255, 255, 0.15);
     
-    --glass-bg: rgba(23, 25, 30, 0.85);
-    --glass-border: rgba(46, 48, 57, 0.7);
+    --accent: #007AFF;
+    --accent-hover: #0066DD;
+    --accent-light: rgba(0, 122, 255, 0.15);
+    
+    --success: #34C759;
+    --success-light: rgba(52, 199, 89, 0.12);
+    --success-border: rgba(52, 199, 89, 0.2);
+    
+    --danger: #FF3B30;
+    --danger-light: rgba(255, 59, 48, 0.12);
+    --danger-border: rgba(255, 59, 48, 0.2);
+
+    --warning: #FF9500;
+    --warning-light: rgba(255, 149, 0, 0.12);
+    --warning-border: rgba(255, 149, 0, 0.2);
+
+    --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.3);
+    --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.4);
   }
 
   body {
     background-color: var(--bg-base);
-    background-image: 
-      radial-gradient(at 0% 0%, rgba(0, 0, 0, 0.015) 0px, transparent 50%),
-      radial-gradient(at 100% 0%, rgba(0, 0, 0, 0.005) 0px, transparent 50%),
-      radial-gradient(at 50% 100%, rgba(255, 255, 255, 0.9) 0px, transparent 100%);
-    background-attachment: fixed;
     color: var(--text-primary);
-    font-family: 'Geist', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-    transition: background-color 0.3s ease, color 0.3s ease, background-image 0.3s ease;
+    font-family: -apple-system, BlinkMacSystemFont, "Inter", sans-serif;
+    font-size: 14px;
+    line-height: 1.6;
+    transition: background-color 220ms ease, color 220ms ease;
   }
+}
 
-  .dark body {
-    background-image: none;
-  }
+/* Craft Signature Dot Grid */
+.dot-grid {
+  background-image: radial-gradient(circle, #D4D2CC 1px, transparent 1px);
+  background-size: 24px 24px;
+  background-color: #FFFFFF;
+}
+
+.dark .dot-grid {
+  background-image: radial-gradient(circle, #3A3835 1px, transparent 1px);
+  background-color: var(--bg-surface);
 }
 
 /* Custom Scrollbars */
 ::-webkit-scrollbar {
-  width: 6px;
-  height: 6px;
+  width: 5px;
+  height: 5px;
 }
 
 ::-webkit-scrollbar-track {
@@ -82,19 +99,27 @@
 }
 
 ::-webkit-scrollbar-thumb {
-  background: #E2E2E8;
-  border-radius: 999px;
+  background: rgba(0, 0, 0, 0.12);
+  border-radius: 99px;
+}
+
+.dark ::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.12);
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: #C8C8D0;
+  background: rgba(0, 0, 0, 0.2);
+}
+
+.dark ::-webkit-scrollbar-thumb:hover {
+  background: rgba(255, 255, 255, 0.2);
 }
 
 /* Animations */
-@keyframes slideUp {
+@keyframes craftSlide {
   from {
     opacity: 0;
-    transform: translateY(12px);
+    transform: translateY(8px);
   }
   to {
     opacity: 1;
@@ -102,40 +127,20 @@
   }
 }
 
-@keyframes pulseBorder {
-  0%, 100% {
-    border-color: var(--border);
-  }
-  50% {
-    border-color: var(--accent);
-  }
-}
-
 .animate-slide-up {
-  animation: slideUp 0.35s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  animation: craftSlide 220ms cubic-bezier(0.16, 1, 0.3, 1) forwards;
 }
 
-.glass-panel {
-  background: var(--glass-bg);
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
-  border: 1px solid var(--glass-border);
-}
-
+/* Micro shadow elevations */
 .custom-shadow {
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.02), 0 8px 24px rgba(93, 84, 246, 0.04);
+  box-shadow: var(--shadow-sm);
 }
 
 .custom-shadow-lg {
-  box-shadow: 0 10px 40px -10px rgba(93, 84, 246, 0.08), 0 1px 3px rgba(0, 0, 0, 0.01);
+  box-shadow: var(--shadow-md);
 }
 
-.animated-dashed-border {
-  background-image: url("data:image/svg+xml,%3csvg width='100%25' height='100%25' xmlns='http://www.w3.org/2000/svg'%3e%3crect width='100%25' height='100%25' fill='none' rx='12' ry='12' stroke='%23C5C4F5FF' stroke-width='2' stroke-dasharray='6%2c 6' stroke-dashoffset='0' stroke-linecap='square'/%3e%3c/svg%3e");
-  border-radius: 12px;
-  transition: all 0.2s ease-in-out;
-}
-
-.animated-dashed-border:hover {
-  background-image: url("data:image/svg+xml,%3csvg width='100%25' height='100%25' xmlns='http://www.w3.org/2000/svg'%3e%3crect width='100%25' height='100%25' fill='none' rx='12' ry='12' stroke='%235D54F6FF' stroke-width='2' stroke-dasharray='6%2c 4' stroke-dashoffset='10' stroke-linecap='square'/%3e%3c/svg%3e");
+/* App transition timings */
+.transition-craft {
+  transition: all 180ms cubic-bezier(0.4, 0, 0.2, 1);
 }
