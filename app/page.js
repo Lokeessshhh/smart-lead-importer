@@ -47,15 +47,42 @@ export default function Home() {
 
   // Backend connection status
   const [isBackendConnected, setIsBackendConnected] = useState(true);
+  const [isWakingUp, setIsWakingUp] = useState(false);
   const [theme, setTheme] = useState("light");
 
   // Check backend availability and load theme preference
   useEffect(() => {
-    fetch(`${BACKEND_URL}/api/upload`).then(() => {
-      setIsBackendConnected(true);
-    }).catch(() => {
-      setIsBackendConnected(false);
-    });
+    let checkTimeout;
+    let pollInterval;
+    
+    const checkHealth = () => {
+      // Set a threshold: if no response in 2 seconds, assume the server is waking up
+      checkTimeout = setTimeout(() => {
+        setIsWakingUp(true);
+      }, 2000);
+
+      fetch(`${BACKEND_URL}/api/health`)
+        .then((res) => {
+          clearTimeout(checkTimeout);
+          if (res.ok) {
+            setIsBackendConnected(true);
+            setIsWakingUp(false);
+          } else {
+            setIsBackendConnected(false);
+          }
+        })
+        .catch(() => {
+          clearTimeout(checkTimeout);
+          setIsBackendConnected(false);
+          setIsWakingUp(true); // free tier server is asleep or offline
+        });
+    };
+
+    // Trigger initial wake-up hit
+    checkHealth();
+
+    // Poll every 8 seconds to track status or speed up wake-up
+    pollInterval = setInterval(checkHealth, 8000);
 
     const savedTheme = localStorage.getItem("theme") || "light";
     setTheme(savedTheme);
@@ -64,6 +91,11 @@ export default function Home() {
     } else {
       document.documentElement.classList.remove("dark");
     }
+
+    return () => {
+      clearTimeout(checkTimeout);
+      clearInterval(pollInterval);
+    };
   }, []);
 
   const toggleTheme = () => {
@@ -280,6 +312,19 @@ export default function Home() {
 
       {/* RIGHT CONTENT WORKSPACE */}
       <div className="flex-1 flex flex-col min-w-0 overflow-y-auto relative h-screen">
+        {/* Server waking up warning alert banner */}
+        {!isBackendConnected && isWakingUp && (
+          <div className="m-6 mb-0 flex items-center gap-3 bg-[var(--warning-light)] border border-[var(--warning-border)] text-[var(--warning)] text-xs font-semibold px-4 py-3 rounded-2xl animate-pulse">
+            <span className="flex h-2 w-2 relative shrink-0">
+              <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-[var(--warning)] opacity-75"></span>
+              <span className="relative inline-flex rounded-full h-2 w-2 bg-[var(--warning)]"></span>
+            </span>
+            <span>
+              <strong>Render Server Waking Up:</strong> The backend is hosted on a free Render tier and is spinning up from sleep. AI processing will be available in about 30 seconds.
+            </span>
+          </div>
+        )}
+
         {/* Top Header Bar */}
         <header className="h-16 px-6 md:px-8 border-b border-[var(--border)] bg-white/80 dark:bg-[var(--bg-surface)]/80 backdrop-blur flex items-center justify-between sticky top-0 z-20 shrink-0">
           <div className="flex items-center gap-2">
@@ -308,9 +353,19 @@ export default function Home() {
 
             {/* Status Dot */}
             <div className="flex items-center gap-2 bg-[var(--bg-elevated)] px-3 py-1.5 rounded-full border border-[var(--border)]">
-              <span className={`w-2 h-2 rounded-full ${isBackendConnected ? "bg-[var(--success)] animate-pulse" : "bg-[var(--danger)]"}`} />
+              <span className={`w-2 h-2 rounded-full ${
+                isBackendConnected 
+                  ? "bg-[var(--success)] animate-pulse" 
+                  : isWakingUp 
+                  ? "bg-[var(--warning)] animate-bounce" 
+                  : "bg-[var(--danger)]"
+              }`} />
               <span className="text-[10px] font-bold text-[var(--text-secondary)] uppercase tracking-wider">
-                {isBackendConnected ? "API Connected" : "API Offline"}
+                {isBackendConnected 
+                  ? "API Connected" 
+                  : isWakingUp 
+                  ? "Waking Up..." 
+                  : "API Offline"}
               </span>
             </div>
           </div>
