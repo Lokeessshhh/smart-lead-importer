@@ -25,8 +25,8 @@ const upload = multer({
   }
 });
 
-// Health check
-app.get('/api/health', (req, res) => {
+// Health check (supports both direct and Vercel-prefixed proxy paths)
+app.get(['/api/health', '/api/backend/api/health'], (req, res) => {
   res.json({ status: 'OK', timestamp: new Date() });
 });
 
@@ -35,7 +35,7 @@ app.get('/api/health', (req, res) => {
  * Accepts a CSV file, parses it, and returns headers and raw rows.
  * Used for client preview (Step 2) if they want to run it through backend.
  */
-app.post('/api/upload', upload.single('file'), (req, res) => {
+app.post(['/api/upload', '/api/backend/api/upload'], upload.single('file'), (req, res) => {
   if (!req.file) {
     return res.status(400).json({ error: 'No file uploaded.' });
   }
@@ -68,7 +68,7 @@ app.post('/api/upload', upload.single('file'), (req, res) => {
  * Endpoint: POST /api/extract
  * Accepts a batch of raw rows and headers, runs AI extraction, and returns structured records.
  */
-app.post('/api/extract', async (req, res) => {
+app.post(['/api/extract', '/api/backend/api/extract'], async (req, res) => {
   const { headers, rows } = req.body;
 
   if (!headers || !rows) {
